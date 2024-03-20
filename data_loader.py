@@ -31,8 +31,8 @@ class CustomDataset(Dataset):
 
 # Transformation for image preprocessing
 data_transform = transforms.Compose([
-    transforms.Resize((224, 224)),
-    transforms.RandomHorizontalFlip(),  # Random horizontal flip for training
+    transforms.Resize((224, 224)), # Resize
+    transforms.RandomHorizontalFlip(),  # Random Horizontal Hlip
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Normalization
 ])

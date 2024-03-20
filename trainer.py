@@ -10,37 +10,30 @@ from PIL import Image
 
 device = torch.device("cuda")
 
-def train(train_loader, model, softmax, ce, mse, optimizer, scaler, use_amp, epoch):
+def train(train_loader, model, softmax, ce, mse, optimizer, scaler, use_amp, alpha, beta):
     model.train()
     sum_loss = 0.0
     count = 0
-    alpha = 1
-    beta=1e-5
     
     for img,score in tqdm(train_loader):
         img = img.to(device, non_blocking=True)
         score = score.to(device, non_blocking=True)
         labels = torch.arange(1, 11, dtype=torch.float32).to(device)
         
-        # print('img')
-        # print(img.shape)
-        # print('score')
-        # print(score.shape)
-        
         with torch.cuda.amp.autocast(enabled=use_amp):
             logit = model(img)
             loss_ce = ce(logit, score)
 
             pred = softmax(logit)
-            pred = torch.sum(pred * labels, axis=1)
+            pred_mean = torch.sum(pred * labels, axis=1)
             score_mean = torch.sum(score * labels, axis=1)
-            loss_mse = mse(score_mean, pred)
+            loss_mse = mse(score_mean, pred_mean)
             
-            l2 = torch.tensor(0., requires_grad=True)
+            l2 = torch.tensor(0., requires_grad=True) # L2 Regularization
             for w in model.parameters():
                 l2 = l2 + torch.norm(w)**2
             
-            loss = loss_ce + loss_mse + (beta * l2)
+            loss = loss_ce + (alpha * loss_mse) + (beta * l2)
             
         optimizer.zero_grad()
         scaler.scale(loss).backward()
@@ -51,12 +44,10 @@ def train(train_loader, model, softmax, ce, mse, optimizer, scaler, use_amp, epo
 
     return sum_loss
 
-def test(test_loader, model, softmax, ce, mse):
+def test(test_loader, model, softmax, ce, mse, alpha, beta):
     model.eval()
     sum_loss = 0.0
     count = 0
-    alpha = 1
-    beta=1e-5
     
     with torch.no_grad():
         for img, score in tqdm(test_loader):
@@ -68,15 +59,15 @@ def test(test_loader, model, softmax, ce, mse):
             loss_ce = ce(logit, score)
 
             pred = softmax(logit)
-            pred = torch.sum(pred * labels, axis=1)
+            pred_mean = torch.sum(pred * labels, axis=1)
             score_mean = torch.sum(score * labels, axis=1)
-            loss_mse = mse(score_mean, pred)
+            loss_mse = mse(score_mean, pred_mean)
         
-            l2 = torch.tensor(0., requires_grad=True)
+            l2 = torch.tensor(0., requires_grad=True) # L2 Regularization
             for w in model.parameters():
                 l2 = l2 + torch.norm(w)**2
             
-            loss = loss_ce + loss_mse + (beta * l2)
+            loss = loss_ce + (alpha * loss_mse) + (beta * l2)
             
             sum_loss += loss.item()
 
