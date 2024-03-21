@@ -1,6 +1,6 @@
 # aesthetic_image_pytorch
 
-aesthetic_imageのPytorch実装
+aesthetic_imageのPytorch実装(開発中)
 
 EfficientNet-B0によるAVAデータセットの美しさスコア付け
 
