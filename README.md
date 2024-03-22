@@ -2,7 +2,7 @@
 
 aesthetic_imageのPytorch実装(開発中)
 
-EfficientNet-B0によるAVAデータセットの美しさスコア付け
+EfficientNet-B0によるAVAデータセットの美しさのスコア付け
 
 ## 参考文献
 * Qiita「TPUを使った写真の美しさスコア付けモデルの学習」
