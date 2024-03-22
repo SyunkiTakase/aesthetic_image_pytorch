@@ -44,8 +44,8 @@ def main(args):
     model.to(device)
     softmax = nn.Softmax().to(device)
 
-    print(model)
-    print("model parameters: ", num_parameters(model))
+    # print(model)
+    # print("model parameters: ", num_parameters(model))
 
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     scaler = torch.cuda.amp.GradScaler(enabled=use_amp)

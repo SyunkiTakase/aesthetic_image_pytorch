@@ -22,11 +22,13 @@ def train(train_loader, model, softmax, ce, mse, optimizer, scaler, use_amp, alp
         
         with torch.cuda.amp.autocast(enabled=use_amp):
             logit = model(img)
-            loss_ce = ce(logit, score)
-
             pred = softmax(logit)
+            
+            score_mean = torch.sum(score * labels, dim=1)
+            score_mean_bucketized = torch.round(score_mean) - 1
             pred_mean = torch.sum(pred * labels, axis=1)
-            score_mean = torch.sum(score * labels, axis=1)
+
+            loss_ce = ce(pred, score_mean_bucketized.long())
             loss_mse = mse(score_mean, pred_mean)
             
             l2 = torch.tensor(0., requires_grad=True) # L2 Regularization
@@ -56,13 +58,15 @@ def test(test_loader, model, softmax, ce, mse, alpha, beta):
             labels = torch.arange(1, 11, dtype=torch.float32).to(device)
             
             logit = model(img)
-            loss_ce = ce(logit, score)
-
             pred = softmax(logit)
+            
+            score_mean = torch.sum(score * labels, dim=1)
+            score_mean_bucketized = torch.round(score_mean) - 1
             pred_mean = torch.sum(pred * labels, axis=1)
-            score_mean = torch.sum(score * labels, axis=1)
+
+            loss_ce = ce(pred, score_mean_bucketized.long())
             loss_mse = mse(score_mean, pred_mean)
-        
+            
             l2 = torch.tensor(0., requires_grad=True) # L2 Regularization
             for w in model.parameters():
                 l2 = l2 + torch.norm(w)**2
