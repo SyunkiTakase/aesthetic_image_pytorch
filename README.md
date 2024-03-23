@@ -27,7 +27,7 @@ python convert_annotation.py --annotation_path /path/to/AVA_dataset/AVA.txt --im
 ハイパーパラメータは適宜調整してください．
 
 ```
-python3 beautiful_model.py --epoch 1 --batch_size 1 --img_dir ./images --train_csv ./AVA_train.csv --validation_csv ./AVA_validation.csv --amp
+python3 train.py --epoch 1 --batch_size 1 --img_dir ./images --train_csv ./AVA_train.csv --validation_csv ./AVA_validation.csv --amp
 ```
 
 ## 参考文献
