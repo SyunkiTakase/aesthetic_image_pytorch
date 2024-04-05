@@ -18,16 +18,23 @@ EfficientNet-B0によるAVAデータセットの美しさのスコア付け
 
 ## 実行手順
 
+### AVAデータセットのダウンロード
+
+下記からAVAデータセットをダウンロードする．
+
+https://github.com/mtobeiyf/ava_downloader.
+
+
 ### アノテーションファイルの変換
 ```
-python convert_annotation.py --annotation_path /path/to/AVA_dataset/AVA.txt --image_dir /path/to/images
+python3 convert_annotation.py --annotation_path /path/to/AVA_dataset/AVA.txt --image_dir /path/to/images
 ```
 
 ### 学習
 ハイパーパラメータは適宜調整してください．
 
 ```
-python3 beautiful_model.py --epoch 1 --batch_size 1 --img_dir ./images --train_csv ./AVA_train.csv --validation_csv ./AVA_validation.csv --amp
+python3 train.py --epoch 30 --batch_size 32 --img_dir ./images --train_csv ./AVA_train.csv --validation_csv ./AVA_validation.csv --amp
 ```
 
 ## 参考文献
