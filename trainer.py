@@ -75,4 +75,9 @@ def test(test_loader, model, softmax, ce, mse, alpha, beta):
             
             sum_loss += loss.item()
 
+        for i in range(img.size(0)): 
+                score_gt = score_mean[i].item()
+                score_pred = pred_mean[i].item()
+                print(f"Image {i+1}: Ground Truth Score = {score_gt}, Predicted Score = {score_pred}")
+
     return sum_loss

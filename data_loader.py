@@ -22,6 +22,9 @@ class CustomDataset(Dataset):
     def __getitem__(self, idx):
         img_name = os.path.join(self.image_dir, f"{self.data.iloc[idx, 1]}.jpg")
         image = Image.open(img_name)
+        image = image.convert("RGB")
+        image = np.array(image)
+        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
         scores = torch.tensor(self.data.iloc[idx, 2:12].values.astype(np.float32))
 
         if self.transform:
