@@ -12,8 +12,8 @@ EfficientNet-B0によるAVAデータセットの美しさのスコア付け
 |convert_annotation.py|アノテーションファイルを変換するコード．|
 |data_loader.py|データセットクラスとデータローダークラスのコード．|
 |make_graph.py|学習曲線を可視化するコード．|
-|train.py|学習を開始するコード．|
-|trainer.py|学習ループのコード．|
+|main.py|学習，評価を開始するコード．|
+|engine.py|学習・検証・評価のループのコード．|
 </details>
 
 ## 実行手順
@@ -34,7 +34,14 @@ python3 convert_annotation.py --annotation_path /path/to/AVA_dataset/AVA.txt --i
 ハイパーパラメータは適宜調整してください．
 
 ```
-python3 train.py --epoch 30 --batch_size 32 --img_dir ./images --train_csv ./AVA_train.csv --validation_csv ./AVA_validation.csv --amp
+python3 main.py --epoch 30 --batch_size 32 --img_dir ./images --train_csv ./AVA_train.csv --validation_csv ./AVA_validation.csv --amp --phase train
+```
+
+### 評価
+`model_name.tar`には学習済みのモデルのパスを指定してください．
+
+```
+python3 main.py --batch_size 32 --img_dir ./images --validation_csv ./AVA_validation.csv --amp --phase test --test_model model_name.tar
 ```
 
 ## 参考文献
